@@ -12,21 +12,6 @@ interface MimeTypes {
 
 export interface TonaPluginOptions {
   /**
-   * Default script source path when neither main.ts nor main.js exists
-   * @default '/src/main.js'
-   */
-  defaultScriptSrc?: string
-  /**
-   * Base directory to resolve main files from
-   * @default process.cwd()
-   */
-  baseDir?: string
-  /**
-   * The path to the shared assets directory
-   * @default path.join(__dirname, '..', 'public')
-   */
-  sharedAssetsPath?: string
-  /**
    * Theme name for build output filename
    * @default 'theme'
    */
@@ -37,24 +22,28 @@ export interface TonaPluginOptions {
  * Vite plugin for Tona themes - combines dynamic script extension and shared assets serving
  */
 export default function tona(options: TonaPluginOptions = {}): Plugin {
-  const {
-    defaultScriptSrc = '/src/main.js',
-    baseDir = process.cwd(),
-    sharedAssetsPath,
-    themeName = 'theme',
-  } = options
+  const { themeName = 'theme' } = options
 
   // Default path to shared assets
-  const assetsPath = sharedAssetsPath || path.join(__dirname, '..', 'public')
+  const assetsPath = path.join(__dirname, '..', 'public')
+  const baseDir = process.cwd()
 
   return {
     name: 'vite-plugin-tona',
 
     config(config: UserConfig): UserConfig {
-      const entryPath = path.resolve(baseDir, 'src/main.ts')
-      const entryExists = fs.existsSync(entryPath)
+      // Check main.ts first, then main.js
+      const tsPath = path.resolve(baseDir, 'src/main.ts')
+      const jsPath = path.resolve(baseDir, 'src/main.js')
 
-      if (!entryExists) {
+      let resolvedEntryPath: string | null = null
+      if (fs.existsSync(tsPath)) {
+        resolvedEntryPath = tsPath
+      } else if (fs.existsSync(jsPath)) {
+        resolvedEntryPath = jsPath
+      }
+
+      if (!resolvedEntryPath) {
         return config
       }
 
@@ -64,13 +53,13 @@ export default function tona(options: TonaPluginOptions = {}): Plugin {
           ? {
               ...existingLib,
               formats: existingLib.formats || (['iife'] as LibraryFormats[]),
-              entry: existingLib.entry || entryPath,
+              entry: existingLib.entry || resolvedEntryPath,
               name: existingLib.name || themeName,
               fileName: existingLib.fileName || (() => `${themeName}.min.js`),
             }
           : {
               formats: ['iife'] as LibraryFormats[],
-              entry: entryPath,
+              entry: resolvedEntryPath,
               name: themeName,
               fileName: () => `${themeName}.min.js`,
             }
@@ -79,16 +68,17 @@ export default function tona(options: TonaPluginOptions = {}): Plugin {
         ...config,
         build: {
           ...config.build,
+          cssCodeSplit: config.build?.cssCodeSplit ?? false,
           lib: libConfig,
         },
       }
     },
 
     transformIndexHtml(html) {
-      // Dynamic script extension: check main.ts or main.js exists
+      // Check main.ts or main.js exists
       const jsPath = path.resolve(baseDir, 'src/main.js')
       const tsPath = path.resolve(baseDir, 'src/main.ts')
-      let scriptSrc = defaultScriptSrc
+      let scriptSrc = '/src/main.js'
 
       if (fs.existsSync(tsPath)) {
         scriptSrc = '/src/main.ts'
