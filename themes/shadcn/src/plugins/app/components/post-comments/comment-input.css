@@ -76,7 +76,7 @@
       bg-transparent
       px-3
       py-2
-      text-sm
+      text-base
       transition-[color,box-shadow]
       outline-none
       focus-visible:ring-[3px]
