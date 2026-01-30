@@ -2,6 +2,7 @@ import {
   Edit3,
   Home,
   type LucideIcon,
+  MessageCircle,
   RssIcon,
   Settings,
   User,
@@ -17,9 +18,10 @@ interface NavItem {
 }
 
 const iconMap = {
-  首页: Home,
+  博客园: Home,
+  我的主页: User,
   新随笔: Edit3,
-  联系: User,
+  联系: MessageCircle,
   订阅: RssIcon,
   管理: Settings,
 }
@@ -37,13 +39,17 @@ export function useNavItems() {
       const navLinks = el.querySelectorAll('li a.menu')
 
       for (const link of navLinks) {
-        const text = link.textContent?.trim() || ''
+        let text = link.textContent?.trim() || ''
+        if (text === '首页') {
+          text = '我的主页'
+        }
+
         const id = link.id || ''
         const href = link.getAttribute('href')
 
-        if (isOwner() && (text === '订阅' || text === '联系')) {
-          continue
-        }
+        // if (isOwner() && (text === '订阅' || text === '联系')) {
+        //   continue
+        // }
 
         if (!isOwner() && (text === '管理' || text === '新随笔')) {
           continue
@@ -55,7 +61,7 @@ export function useNavItems() {
           icon: iconMap[text as keyof typeof iconMap],
           onClick: () => {
             if (href) {
-              const target = text === '首页' ? '_self' : '_blank'
+              const target = text === '我的主页' ? '_self' : '_blank'
               window.open(href, target)
               return
             }
