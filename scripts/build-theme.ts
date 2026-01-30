@@ -16,11 +16,11 @@ const themes = fs
   .filter((file) => fs.statSync(path.join(themesDir, file)).isDirectory())
 
 async function main(): Promise<void> {
-  // 解析命令行参数，支持 --theme 参数或直接传入皮肤名
+  // 解析命令行参数，支持 -theme 参数或直接传入皮肤名
   let selectedTheme: string | null = null
 
-  // 检查是否使用了 --theme 参数
-  const themeIndex = process.argv.indexOf('--theme')
+  // 检查是否使用了 -theme 参数
+  const themeIndex = process.argv.indexOf('-theme')
   if (themeIndex !== -1 && themeIndex + 1 < process.argv.length) {
     selectedTheme = process.argv[themeIndex + 1]
   } else if (process.argv[2] && !process.argv[2].startsWith('--')) {
@@ -31,13 +31,14 @@ async function main(): Promise<void> {
   // 如果没有通过参数指定皮肤，则显示菜单供用户选择
   if (!selectedTheme) {
     const result = await showMenu()
-    selectedTheme = result
 
     // 检查用户是否取消了选择
-    if (isCancel(selectedTheme)) {
+    if (isCancel(result)) {
       cancel('操作已取消')
       process.exit(0)
     }
+
+    selectedTheme = result
   }
 
   // 验证皮肤选择
