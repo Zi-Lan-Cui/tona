@@ -1,8 +1,9 @@
-import { useAvatar } from '../../hooks/use-avatar'
+import { useContext } from 'preact/hooks'
+import { AvatarContext } from '../../context/avatar-context'
 import { useHeroImage, usePostInfo, usePostTitle } from './hooks'
 
 export function PostHero2() {
-  const avatar = useAvatar()
+  const avatar = useContext(AvatarContext)
   const title = usePostTitle()
   const postInfo = usePostInfo()
   const heroImage = useHeroImage()
@@ -24,7 +25,7 @@ export function PostHero2() {
           <img
             class='!size-10 rounded-full'
             src={avatar}
-            alt="Zane's avatar"
+            alt='avatar'
             fetchPriority='high'
           />
           <h4 className='font-bold text-md'>Zane</h4>

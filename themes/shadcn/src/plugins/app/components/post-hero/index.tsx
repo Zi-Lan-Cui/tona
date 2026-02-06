@@ -1,9 +1,10 @@
+import { useContext } from 'preact/hooks'
 import { BubbleBackground } from '../../../../components/ui/bubble-background'
-import { useAvatar } from '../../hooks/use-avatar'
+import { AvatarContext } from '../../context/avatar-context'
 import { usePostInfo, usePostTitle } from './hooks'
 
 export function PostHero() {
-  const avatar = useAvatar()
+  const avatar = useContext(AvatarContext)
   const title = usePostTitle()
   const postInfo = usePostInfo()
 
@@ -34,7 +35,7 @@ export function PostHero() {
               <img
                 className='!size-10 rounded-full border-2 border-white/20 shadow-lg'
                 src={avatar}
-                alt="Zane's avatar"
+                alt='avatar'
                 fetchPriority='high'
                 width={40}
                 height={40}

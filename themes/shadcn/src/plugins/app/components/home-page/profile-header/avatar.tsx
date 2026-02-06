@@ -1,12 +1,13 @@
-import { useAvatar } from '@/plugins/app/hooks/use-avatar'
+import { useContext } from 'preact/hooks'
+import { AvatarContext } from '@/plugins/app/context/avatar-context'
 
 export function Avatar() {
-  const avatar = useAvatar()
+  const avatar = useContext(AvatarContext)
 
   return (
     <img
       className='!size-32 select-none rounded-full ring-1 ring-border ring-offset-2 ring-offset-background sm:size-40'
-      alt="Zane's avatar"
+      alt='avatar'
       src={avatar}
       fetchPriority='high'
       decoding='sync'

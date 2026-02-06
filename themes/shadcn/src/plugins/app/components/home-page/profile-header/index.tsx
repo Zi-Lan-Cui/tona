@@ -1,13 +1,10 @@
-import { getAboutOptions } from 'tona-options'
-import { FlipSentences } from '@/plugins/app/components/flip-sentences'
 import { Avatar } from './avatar'
 import { FollowButton } from './follow-button'
 import { Followers } from './followers'
+import { Tags } from './tags'
 import { VerifiedIcon } from './verified-icon'
 
 export function ProfileHeader() {
-  const { tags } = getAboutOptions()
-
   return (
     <div className='screen-line-after relative flex border-edge border-x'>
       <div className='shrink-0 border-edge border-r'>
@@ -30,9 +27,7 @@ export function ProfileHeader() {
             <VerifiedIcon className='size-[0.6em] translate-y-px select-none text-info' />
           </h1>
           <div className='h-12 border-edge border-t py-1 pl-4 sm:h-auto'>
-            <FlipSentences className='text-balance font-mono text-muted-foreground text-sm'>
-              {tags}
-            </FlipSentences>
+            <Tags />
           </div>
         </div>
       </div>
