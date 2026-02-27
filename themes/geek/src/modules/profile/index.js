@@ -146,9 +146,9 @@ function insertMessage() {
   const following = getFollowing()
 
   $('.profile-nickname').text(userName)
-  $('.profile-age').append(age)
-  $('.profile-followers').append(followers)
-  $('.profile-following').append(following)
+  $('.profile-age').text(age)
+  $('.profile-followers').text(followers)
+  $('.profile-following').text(following)
   $('.profile-followstate').text(followState ? '已关注' : '+ 关注')
 }
 
